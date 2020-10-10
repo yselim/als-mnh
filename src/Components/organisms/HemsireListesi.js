@@ -1,7 +1,9 @@
 import React from "react";
 
-export default () => {
+const HemsireListesi= () => {
   return <div>
         Hemsire Listesi
   </div>
 };
+
+export default HemsireListesi;

@@ -1,11 +1,19 @@
 
 import React from "react";
+import Radio from '@material-ui/core/Radio';
 
-export default ({text}) => {
+export default ({text, checked, onChange, value }) => {
   return (
-    <div>
-      {text}
-    </div>
+    <div style={{ display: "flex", alignItems: "center" }}>
+          <Radio
+            checked={checked}
+            value={value}
+            onChange={(e) => {
+              onChange(e.target.value)
+            }}
+          />
+          <span>{text}</span>
+        </div>
   );
 };
 

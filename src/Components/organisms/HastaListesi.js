@@ -1,16 +1,25 @@
 import React from "react";
-import Tablo from "../atoms/Tablo";
+import Tablo from "../molecules/Tablo";
 
-const liste = [
-  { adi: "Ahmet", soyadi: "YILMAZ", tc: "1234556", id: "1" },
-  { adi: "Ali", soyadi: "VELİ", tc: "1234556", id: "2" },
-  { adi: "Veli", soyadi: "DENEME", tc: "1234556", id: "3" },
-  { adi: "Bill", soyadi: "GATES", tc: "1234556", id: "4" },
-  { adi: "Elon", soyadi: "MUSK", tc: "1234556", id: "5" },
-  { adi: "Polat", soyadi: "ALEMDAR", tc: "1234556", id: "6" },
-]; // context'teki state'e göre firebase'den çekilecek.
+const liste = [["Ahmet", "Yılmaz", "12345678910"]]; // context'teki state'e göre firebase'den çekilecek.
+
+const kolonlar = [{ title: "Adı" }, { title: "Soyadı" }, { title: "Tc" }];
+
+const tableProps = {
+  titles: ["ADI", "SOYADI", "TC"],
+  titleAligns: ["", "", "center"],
+  texts: [
+    ["Ahmet", "Yılmaz", "1234565678"],
+    ["Bill", "Gates", "987654321"],
+    ["Elon", "Musk", "1111111111"],
+  ],
+  textAligns: ["", "", "center"],
+};
+
 export default () => {
-  return <div>
-      <Tablo veriler={liste} />
-  </div>;
+  return (
+    <div>
+      <Tablo tableProps={tableProps} />
+    </div>
+  );
 };

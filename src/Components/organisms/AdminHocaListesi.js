@@ -1,7 +1,9 @@
 import React from "react";
 
-export default () => {
+const AdminHocaListesi =() => {
   return <div>
         Admin/Hoca Listesi
   </div>
 };
+
+export default AdminHocaListesi;

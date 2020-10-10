@@ -1,7 +1,9 @@
 import React from "react";
 
-export default () => {
+const RaporListesi= () => {
   return <div>
         Rapor Listesi
   </div>
 };
+
+export default RaporListesi;
