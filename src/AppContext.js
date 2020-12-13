@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { listenUsers } from "./firestoreMethods";
 // import {
 //   pullQuestions,
 //   pullAnswers,
@@ -16,12 +17,37 @@ class AppProvider extends Component {
     super(props);
     this.state = {
       selectedList:"",
+      admins : [], 
+      patients: [],
+      nurses: [],
+      docs: [],
+      reports:[],
+      selectedUser:null
+
+      // admins, patients vs. listelerinde başkası değişiklik yaparsa, bunları kullanan tüm insanların ekranları re-render olacak.
+      // bu saçma render'lara sebep oluyor. context-api'nin kötü özelliği. Ama kişi listesi seyrek değişeceği için bunu kabul ediyorum.
+      // raporlar gibi sık güncellenecek alanları context-api'de değil local state'te tutmalıyım. 
     };
   }
 
+  
+
   componentDidMount() {
-   
+    listenUsers((userType, newUsers) => {
+      if(userType==="admins")
+       this.setState({ admins: newUsers });
+       else if(userType==="patients")
+       this.setState({ patients: newUsers });
+       else if(userType==="nurses")
+       this.setState({ nurses: newUsers });
+        else if(userType==="docs")
+        this.setState({ docs: newUsers });
+
+    }); // TODO: Burası hemşire için çalışmayacak. Hocalar sadece hastaları görecek filan...
   }
+
+
+
 
   // pullQuestionsFromDb = async (questionDate) => {
   //   if (!this.state.isPullingQuestions) {
@@ -86,10 +112,7 @@ class AppProvider extends Component {
   }
 
   render() {
-    const {
 
-      selectedList
-    } = this.state;
     const {
       changeCentralState
     } = this;
@@ -97,7 +120,7 @@ class AppProvider extends Component {
     return (
       <AppContext.Provider
         value={{
-          selectedList,
+         ...this.state,
           changeCentralState
         }}
       >

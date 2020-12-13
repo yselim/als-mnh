@@ -30,10 +30,13 @@ KİŞİLER
     adres
     rol : hasta / admin / hemşire / hoca
     not
+    durum: ayrıldı/ara verdi/devam ediyor
 
 HASTA_ATAMA
     hasta_id
     ilgili_kisi_id
+    tarih
+    atayan_kisi
 
 RAPORLAR
     hasta_id
@@ -41,3 +44,8 @@ RAPORLAR
     rapor_tarihi
     kilo vs..
 
+
+
+# ------------- ATOMİC DESİGN NOTLARI
+- Material ui componentleri kullanacaksan ve sonradan bunları değiştirme düşüncen yoksa, bunları atomların içine sarmak mantıksız. Molekül-organizm içinde doğrudan kullan. Bunlar zaten hazır atomlar.
+- 
