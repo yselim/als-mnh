@@ -1,4 +1,7 @@
 import { db } from "./config/firebaseConfig";
+import 'firebase/firestore';
+import firebase from 'firebase/app';
+
 
 const kisileriCek = (filtre)=>{
     
@@ -6,13 +9,44 @@ const kisileriCek = (filtre)=>{
     .get()
     .then(querySnapshot => {
       const data = querySnapshot.docs.map(doc => doc.data());
-      console.log(data); // array of cities objects
     });
+}
+
+const pullNursesOfPatient= async (patientUid)=>{
+
+  const hemsire_uids= await db.collection("hasta_atama")
+  .where("hasta_uid", "==", patientUid)
+  .get()
+  .then(querySnapshot => {
+    return querySnapshot.docs.map(doc => doc.data().hemsire_uid);
+  });
+
+
+  if(hemsire_uids.length>0){
+    return await db.collection("kisiler")
+    .where( firebase.firestore.FieldPath.documentId(), "in", hemsire_uids)
+    .get()
+    .then(querySnapshot => {
+      return querySnapshot.docs.map(doc => doc.data());
+    });
+  }
+  else 
+  return [];
+}
+
+const pullReportsOfPatient= async (patientUid)=>{
+
+  return await db.collection("raporlar")
+  .where("hasta_uid", "==",patientUid )
+  .get()
+  .then(querySnapshot => {
+    return querySnapshot.docs.map(doc => doc.data());
+  });
+
 }
 
 const listenUsers = (afterDataChangeFunction) =>{
   const roles = [
-
     {id: 1, name: "admins"},
     {id: 2, name: "patients"},
     {id: 3, name: "nurses"},
@@ -26,7 +60,6 @@ const listenUsers = (afterDataChangeFunction) =>{
     
         var users = [];
         querySnapshot.forEach(function(doc) {
-          console.log("doc.data(): ", doc.data());
           users.push({...doc.data(), uid: doc.id});
         });
         afterDataChangeFunction(r.name, users);
@@ -38,4 +71,49 @@ const listenUsers = (afterDataChangeFunction) =>{
     
 }
 
-export {kisileriCek, listenUsers};
+const pullPatientsOfNurse= async (nurseUid)=>{
+
+const patient_uids= await db.collection("hasta_atama")
+.where("hemsire_uid", "==", nurseUid)
+.get()
+.then(querySnapshot => {
+  return querySnapshot.docs.map(doc => doc.data().hemsire_uid);
+});
+
+
+if(patient_uids.length>0){
+  return await db.collection("kisiler")
+  .where( firebase.firestore.FieldPath.documentId(), "in", patient_uids)
+  .get()
+  .then(querySnapshot => {
+    return querySnapshot.docs.map(doc => doc.data());
+  });
+}
+else 
+return [];
+}
+
+const pullReportsOfWriter= async (writerUid)=>{
+
+  return await db.collection("raporlar")
+  .where("yazar_uid", "==",writerUid )
+  .get()
+  .then(querySnapshot => {
+    return querySnapshot.docs.map(doc => doc.data());
+  });
+
+}
+
+const pullAllReports = async ()=>{
+
+  return await db.collection("raporlar")
+  .get()
+  .then(querySnapshot => {
+    return querySnapshot.docs.map(doc => doc.data());
+  });
+
+}
+
+
+
+export {kisileriCek, listenUsers, pullNursesOfPatient, pullReportsOfPatient, pullPatientsOfNurse, pullReportsOfWriter, pullAllReports};

@@ -10,9 +10,11 @@ const HemsireListesi= () => {
   return (
     <div>
     <KisiListesi
-      rows={centralState.nurses.map((u) => {
-        return { adi: u.adi, soyadi: u.soyadi, tc: u.tc };
-      })}
+      // rows={centralState.nurses.map((u) => {
+      //   return { adi: u.adi, soyadi: u.soyadi, tc: u.tc };
+      // })}
+
+      rows={centralState.nurses}
     />
   </div>
   );

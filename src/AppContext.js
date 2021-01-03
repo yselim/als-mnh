@@ -22,7 +22,7 @@ class AppProvider extends Component {
       nurses: [],
       docs: [],
       reports:[],
-      selectedUser:null
+      selectedUser:{rol:-1} 
 
       // admins, patients vs. listelerinde başkası değişiklik yaparsa, bunları kullanan tüm insanların ekranları re-render olacak.
       // bu saçma render'lara sebep oluyor. context-api'nin kötü özelliği. Ama kişi listesi seyrek değişeceği için bunu kabul ediyorum.

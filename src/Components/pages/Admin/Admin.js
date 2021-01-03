@@ -2,7 +2,8 @@ import React, { Component, useEffect } from "react";
 import AppContext from "../../../AppContext";
 import { ROLLER } from "../../../constants";
 
-import AdminHocaListesi from "../../organisms/AdminHocaListesi";
+import HocaListesi from "../../organisms/HocaListesi";
+import AdminListesi from "../../organisms/AdminListesi";
 import HastaListesi from "../../organisms/HastaListesi";
 import HemsireListesi from "../../organisms/HemsireListesi";
 import KisiBilgileri from "../../organisms/KisiBilgileri";
@@ -19,13 +20,13 @@ const Admin = () => {
   const renderProperList = () => {
     switch (centralState.selectedList) {
       case "Yöneticiler":
-        return <AdminHocaListesi />;
+        return <AdminListesi />;
       case "Hastalar":
         return <HastaListesi />;
       case "Hemşireler":
         return <HemsireListesi />;
       case "Hocalar":
-        return <AdminHocaListesi />;
+        return <HocaListesi />;
       case "Raporlar":
         return <RaporListesi />;
       default: return null;
