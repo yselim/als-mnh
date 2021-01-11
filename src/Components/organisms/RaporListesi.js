@@ -35,7 +35,9 @@ const RaporListesi= () => {
         <TableCell align="center" style={{ fontWeight: "bold" }}>
           Yazar
         </TableCell>
-
+        <TableCell align="center" style={{ fontWeight: "bold" }}>
+          Hasta
+        </TableCell>
         <TableCell
           align="center"
           style={{ fontWeight: "bold" }}
@@ -47,6 +49,7 @@ const RaporListesi= () => {
         <TableRow>
           <TableCell align="center">{row.tarih} </TableCell>
           <TableCell align="center">{row.yazar_adi_soyadi} </TableCell>
+          <TableCell align="center">{row.hasta_adi_soyadi} </TableCell>
           <TableCell align="center" style={{ fontWeight: "bold" }}>
             <Button
               variant="contained"

@@ -104,6 +104,7 @@ const pullReportsOfWriter= async (writerUid)=>{
 
 }
 
+
 const pullAllReports = async ()=>{
 
   return await db.collection("raporlar")
@@ -115,5 +116,12 @@ const pullAllReports = async ()=>{
 }
 
 
+const insertNewUser = async (u)=>{
 
-export {kisileriCek, listenUsers, pullNursesOfPatient, pullReportsOfPatient, pullPatientsOfNurse, pullReportsOfWriter, pullAllReports};
+  return await db.collection("kisiler").add(u);
+  
+
+}
+
+
+export {kisileriCek, listenUsers, pullNursesOfPatient, pullReportsOfPatient, pullPatientsOfNurse, pullReportsOfWriter, pullAllReports, insertNewUser};

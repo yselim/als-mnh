@@ -1,6 +1,5 @@
 import React, { Component, useEffect } from "react";
 import AppContext from "../../../AppContext";
-import { ROLLER } from "../../../constants";
 
 import HocaListesi from "../../organisms/HocaListesi";
 import AdminListesi from "../../organisms/AdminListesi";
