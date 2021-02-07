@@ -49,3 +49,13 @@ RAPORLAR
 # ------------- ATOMİC DESİGN NOTLARI
 - Material ui componentleri kullanacaksan ve sonradan bunları değiştirme düşüncen yoksa, bunları atomların içine sarmak mantıksız. Molekül-organizm içinde doğrudan kullan. Bunlar zaten hazır atomlar.
 - 
+
+# ---- TO DO
+
+-   logout butonu
+-   hemşire-hoca ekranları 
+-   detaylı rapor inputları
+-   excele aktarmalar
+-   kisi ve rapor filtreleme-süzme işlemleri
+-   tasarım - responsive mi
+-   Yeni kullanıcı eklerken mail-şifre de yazmalıyız ki o kişi login olabilsin.

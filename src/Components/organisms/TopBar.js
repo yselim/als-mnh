@@ -1,12 +1,12 @@
 /* eslint-disable react/jsx-pascal-case */
 import React, { useState } from "react";
 import Label_radio from "../molecules/Label_radio";
-import { ADMIN_ISLEM_LISTESI, ROLLER } from "../../constants";
+import { ADMIN_ISLEM_LISTESI, ROLLER, HEMSIRE_ISLEM_LISTESI } from "../../constants";
 import AppContext from "../../AppContext";
 import { Button, MenuItem, Modal, Select, TextField } from "@material-ui/core";
-import { insertNewUser } from "../../firestoreMethods";
+import { insertNewUser, logout } from "../../firestoreMethods";
 
-export default () => {
+const TopBar = () => {
   const centralState = React.useContext(AppContext);
 
   const [params, setParams] = useState({
@@ -119,26 +119,34 @@ export default () => {
     );
   };
 
+  const getProperMenuItems = ()=>{
+    const rol = centralState.loggedOnUser.rol;
+    if(rol===1)
+      return ADMIN_ISLEM_LISTESI;
+    else if(rol===3)
+    return HEMSIRE_ISLEM_LISTESI;
+    else return [];
+  }
+
+
   return (
-    <div
-      style={{
-        display: "flex",
-        padding: 10,
-        margin: 10,
-        border: "solid black 2px",
-        borderRadius: 15,
-      }}
-    >
+    <div style={{ display: "flex" }}>
       <Label_radio
-        text={"GÖSTERİLECEK LİSTE"}
-        liste={ADMIN_ISLEM_LISTESI}
+        liste={getProperMenuItems()}
         selectedValue={centralState.selectedList} //{params.selectedRadio}
         onSelectionChange={(newSelection) => {
           centralState.changeCentralState("selectedList", newSelection);
         }}
       />
 
-      <div style={{ marginLeft:20, display:"flex", flexDirection:"column", justifyContent:"flex-end"}}>
+      <div
+        style={{
+          marginLeft: 20,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "flex-end",
+        }}
+      >
         <Button
           variant="contained"
           color="secondary"
@@ -150,7 +158,24 @@ export default () => {
         </Button>
       </div>
 
+      <Button
+        variant="contained"
+        color="primary"
+        size="small"
+        onClick={(_) => {
+          const afterMethod = () => {
+            centralState.changeCentralState("loggedOnUser", { rol: -1 });
+          };
+
+          logout(afterMethod);
+        }}
+      >
+        {"Logout: " + centralState.loggedOnUser.email}
+      </Button>
+
       {generateNewUserModal()}
     </div>
   );
 };
+
+export default TopBar;

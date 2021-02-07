@@ -7,3 +7,5 @@ export const ROLLER = {
 };
 
 export const ADMIN_ISLEM_LISTESI = ["Yöneticiler", "Hastalar", "Hemşireler", "Hocalar", "Raporlar"];
+export const HEMSIRE_ISLEM_LISTESI = ["Hastalar", "Raporlar"];
+

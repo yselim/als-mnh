@@ -1,2 +1,2 @@
-const Footer= ()=>"Footer";
+const Footer= ()=>"ALS-MNH Derneği";
 export default Footer;

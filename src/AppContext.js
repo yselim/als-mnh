@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { listenUsers } from "./firestoreMethods";
+import {  listenAuthenticatedUserChanges, pullUsers } from "./firestoreMethods";
 // import {
 //   pullQuestions,
 //   pullAnswers,
@@ -22,8 +22,8 @@ class AppProvider extends Component {
       nurses: [],
       docs: [],
       reports:[],
-      selectedUser:{rol:-1} 
-
+      selectedUser:{rol:-1} ,
+      loggedOnUser:{rol:-1}
       // admins, patients vs. listelerinde başkası değişiklik yaparsa, bunları kullanan tüm insanların ekranları re-render olacak.
       // bu saçma render'lara sebep oluyor. context-api'nin kötü özelliği. Ama kişi listesi seyrek değişeceği için bunu kabul ediyorum.
       // raporlar gibi sık güncellenecek alanları context-api'de değil local state'te tutmalıyım. 
@@ -33,22 +33,66 @@ class AppProvider extends Component {
   
 
   componentDidMount() {
-    listenUsers((userType, newUsers) => {
-      if(userType==="admins")
-       this.setState({ admins: newUsers });
-       else if(userType==="patients")
-       this.setState({ patients: newUsers });
-       else if(userType==="nurses")
-       this.setState({ nurses: newUsers });
-        else if(userType==="docs")
-        this.setState({ docs: newUsers });
 
-    }); // TODO: Burası hemşire için çalışmayacak. Hocalar sadece hastaları görecek filan...
+    listenAuthenticatedUserChanges(async (user) => {
+   
+      if(user){
+        this.setState({loggedOnUser: user});
+        if(user.rol===1)
+          this.pullDataForAdmin();
+        else if(user.rol===3)
+          this.pullDataForNurse(user.uid);
+        
+      }
+
+    });
+
+  }
+    
+
+  //   listenUsers(this.state.loggedOnUser, (userType, newUsers) => {
+  //     if(userType==="admins")
+  //      this.setState({ admins: newUsers });
+  //      else if(userType==="patients")
+  //      this.setState({ patients: newUsers });
+  //      else if(userType==="nurses")
+  //      this.setState({ nurses: newUsers });
+  //       else if(userType==="docs")
+  //       this.setState({ docs: newUsers });
+
+  //   }); // TODO: Burası hemşire için çalışmayacak. Hocalar sadece hastaları görecek filan...
+ 
+
+
+  pullDataForAdmin = async ()=>{
+    
+    const [admins, patients, nurses, docs]  = await Promise.all([
+      pullUsers({rol:1}), 
+      pullUsers({rol:2}), 
+      pullUsers({rol:3}), 
+      pullUsers({rol:4})
+    ]);
+
+    this.setState({
+      admins, patients, nurses, docs
+    });
   }
 
+  pullDataForNurse = async (nurseUid)=>{
+    
+    const [admins, patients, nurses, docs]  = await Promise.all([
+      [], 
+      pullUsers({rol:2, nurseUid}), 
+      [], 
+      []
+    ]);
 
+    this.setState({
+      admins, patients, nurses, docs
+    });
+  }
 
-
+  
   // pullQuestionsFromDb = async (questionDate) => {
   //   if (!this.state.isPullingQuestions) {
   //     this.setState({ isPullingQuestions: true }, async () => {
@@ -79,14 +123,6 @@ class AppProvider extends Component {
   //   this.pullAnswersFromDb(newDate);
   // };
 
-  // setUser = (user) => {
-  //   if (user) {
-  //     const userIsAnAdmin = Object.keys(user).length > 0;
-  //     this.setState({ user, userIsAnAdmin });
-  //   } else {
-  //     this.setState({ user: {}, userIsAnAdmin: false });
-  //   }
-  // };
 
   // reorderQuestions = (orders) => {
   //   //orders objesi. key'ler question id, value'lar soru sırası olacak şekilde key-value çiftleri içerir.
@@ -121,7 +157,8 @@ class AppProvider extends Component {
       <AppContext.Provider
         value={{
          ...this.state,
-          changeCentralState
+          changeCentralState,
+          
         }}
       >
         {this.props.children}

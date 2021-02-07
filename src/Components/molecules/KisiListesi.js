@@ -11,7 +11,7 @@ export default ({ rows }) => {
   const centralState = React.useContext(AppContext);
   
   return (
-    <div>
+    <div style={{}}>
       <Table //className={classes.table}
         aria-label="simple table"
       >
@@ -32,7 +32,7 @@ export default ({ rows }) => {
         </TableHead>
         <TableBody>
           {rows.map((row, i) => (
-            <TableRow>
+            <TableRow key={row.tc + "kisi_kistesi_"+i}>
               <TableCell align="center">{row.tc} </TableCell>
               <TableCell align="center">{row.adi} </TableCell>
               <TableCell align="center">{row.soyadi} </TableCell>
