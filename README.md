@@ -52,10 +52,11 @@ RAPORLAR
 
 # ---- TO DO
 
--   logout butonu
+-   Yeni rapor yazma ekranına form ekle --- React-Hook-Form ile çok güzel yapabilirsin.
 -   hemşire-hoca ekranları 
 -   detaylı rapor inputları
 -   excele aktarmalar
 -   kisi ve rapor filtreleme-süzme işlemleri
 -   tasarım - responsive mi
 -   Yeni kullanıcı eklerken mail-şifre de yazmalıyız ki o kişi login olabilsin.
+-   Sorulacak: hemşire sadece kendi yazdığı raporları mı görsün yoksa kendi hastalarına yazılan tüm raporları - başkası yazmış olsa bile - görsün mü?

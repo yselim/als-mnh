@@ -12,15 +12,15 @@ const RaporListesi = () => {
   const centralState = React.useContext(AppContext);
   const { reports, changeCentralState } = centralState;
 
-  useEffect(() => {
-    pullAllReports().then((res) => {
-      changeCentralState("reports", res);
-    });
-  }, []);
+  // useEffect(() => {
+  //   pullAllReports().then((res) => {
+  //     changeCentralState("reports", res);
+  //   });
+  // }, []);
 
   return (
     <div style={{}}>
-     <div>TÜM RAPORLAR</div> 
+     <div>RAPORLAR</div> 
       <Table //className={classes.table}
         aria-label="simple table"
       >

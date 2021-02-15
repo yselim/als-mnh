@@ -1,13 +1,18 @@
 /* eslint-disable react/jsx-pascal-case */
 import React, { useState } from "react";
 import Label_radio from "../molecules/Label_radio";
-import { ADMIN_ISLEM_LISTESI, ROLLER, HEMSIRE_ISLEM_LISTESI } from "../../constants";
+import {
+  ADMIN_ISLEM_LISTESI,
+  ROLLER,
+  HEMSIRE_ISLEM_LISTESI,
+} from "../../constants";
 import AppContext from "../../AppContext";
 import { Button, MenuItem, Modal, Select, TextField } from "@material-ui/core";
 import { insertNewUser, logout } from "../../firestoreMethods";
 
 const TopBar = () => {
   const centralState = React.useContext(AppContext);
+  const rol = centralState.loggedOnUser.rol;
 
   const [params, setParams] = useState({
     showNewUserModal: false,
@@ -119,60 +124,58 @@ const TopBar = () => {
     );
   };
 
-  const getProperMenuItems = ()=>{
-    const rol = centralState.loggedOnUser.rol;
-    if(rol===1)
-      return ADMIN_ISLEM_LISTESI;
-    else if(rol===3)
-    return HEMSIRE_ISLEM_LISTESI;
+  const getProperMenuItems = () => {
+  
+    if (rol === 1) return ADMIN_ISLEM_LISTESI;
+    else if (rol === 3) return HEMSIRE_ISLEM_LISTESI;
     else return [];
-  }
+  };
 
+  const islemListesi = (
+    <Label_radio
+      liste={getProperMenuItems()}
+      selectedValue={centralState.selectedList} //{params.selectedRadio}
+      onSelectionChange={(newSelection) => {
+        centralState.changeCentralState("selectedList", newSelection);
+      }}
+    />
+  );
+
+  const newUserButton = [].includes(rol) && (
+    <Button
+      variant="contained"
+      color="secondary"
+      onClick={(_) => {
+        setParam("showNewUserModal", true);
+      }}
+    >
+      Yeni Kişi Ekle
+    </Button>
+  );
+
+  const logoutButton = (
+    <Button
+    style={{textTransform:"none"}}
+      variant="contained"
+      color="primary"
+      size="small"
+      onClick={(_) => {
+        const afterMethod = () => {
+          centralState.changeCentralState("loggedOnUser", { rol: -1 });
+        };
+
+        logout(afterMethod);
+      }}
+    >
+      {"ÇIKIŞ : " + centralState.loggedOnUser.email}
+    </Button>
+  );
 
   return (
-    <div style={{ display: "flex" }}>
-      <Label_radio
-        liste={getProperMenuItems()}
-        selectedValue={centralState.selectedList} //{params.selectedRadio}
-        onSelectionChange={(newSelection) => {
-          centralState.changeCentralState("selectedList", newSelection);
-        }}
-      />
-
-      <div
-        style={{
-          marginLeft: 20,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "flex-end",
-        }}
-      >
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={(_) => {
-            setParam("showNewUserModal", true);
-          }}
-        >
-          Yeni Kişi Ekle
-        </Button>
-      </div>
-
-      <Button
-        variant="contained"
-        color="primary"
-        size="small"
-        onClick={(_) => {
-          const afterMethod = () => {
-            centralState.changeCentralState("loggedOnUser", { rol: -1 });
-          };
-
-          logout(afterMethod);
-        }}
-      >
-        {"Logout: " + centralState.loggedOnUser.email}
-      </Button>
-
+    <div style={{ display: "flex", justifyContent: "space-between" }}>
+      {islemListesi}
+      {newUserButton}
+      {logoutButton}
       {generateNewUserModal()}
     </div>
   );

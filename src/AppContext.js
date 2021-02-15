@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {  listenAuthenticatedUserChanges, pullUsers } from "./firestoreMethods";
+import {  listenAuthenticatedUserChanges, pullUsers, pullReportsOfWriter, pullAllReports } from "./firestoreMethods";
 // import {
 //   pullQuestions,
 //   pullAnswers,
@@ -66,29 +66,31 @@ class AppProvider extends Component {
 
   pullDataForAdmin = async ()=>{
     
-    const [admins, patients, nurses, docs]  = await Promise.all([
+    const [admins, patients, nurses, docs, reports]  = await Promise.all([
       pullUsers({rol:1}), 
       pullUsers({rol:2}), 
       pullUsers({rol:3}), 
-      pullUsers({rol:4})
+      pullUsers({rol:4}),
+      pullAllReports()
     ]);
 
     this.setState({
-      admins, patients, nurses, docs
+      admins, patients, nurses, docs, reports
     });
   }
 
   pullDataForNurse = async (nurseUid)=>{
     
-    const [admins, patients, nurses, docs]  = await Promise.all([
+    const [admins, patients, nurses, docs, reports]  = await Promise.all([
       [], 
       pullUsers({rol:2, nurseUid}), 
       [], 
-      []
+      [],
+      pullReportsOfWriter(nurseUid)
     ]);
 
     this.setState({
-      admins, patients, nurses, docs
+      admins, patients, nurses, docs, reports
     });
   }
 

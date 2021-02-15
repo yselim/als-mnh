@@ -228,6 +228,8 @@ const logout = (afterMethod) => {
   );
 };
 
+
+
 export {
   listenUsers,
   pullReportsOfPatient,

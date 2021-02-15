@@ -5,7 +5,7 @@ import HocaListesi from "../organisms/HocaListesi";
 import AdminListesi from "../organisms/AdminListesi";
 import HastaListesi from "../organisms/HastaListesi";
 import HemsireListesi from "../organisms/HemsireListesi";
-import KisiBilgileri from "../organisms/KisiBilgileri";
+import KisiBilgileri from "../organisms/KisiBilgileri/KisiBilgileri";
 import RaporListesi from "../organisms/RaporListesi";
 import AdminTemplate from "../templates/AdminTemplate";
 import PiTemplate from "../templates/PiTemplate";

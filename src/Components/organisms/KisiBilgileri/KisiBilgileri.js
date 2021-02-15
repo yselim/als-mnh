@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import AppContext from "../../AppContext";
-import PersonalDataCard from "./PersonalDataCard";
+import AppContext from "../../../AppContext";
+import PersonalDataCard from "../PersonalDataCard";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -12,11 +12,15 @@ import {
   detachNurseAndPatient,
   connectNurseAndPatient,
   pullUsers
-} from "../../firestoreMethods";
+} from "../../../firestoreMethods";
 import { Button } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-import UserSearcherModal from "./UserSearcherModal";
+import UserSearcherModal from "../UserSearcherModal";
 import { Link } from "react-router-dom";
+import NewReportModal from "../NewReportModal/NewReportModal";
+
+import "./style.css";
+
 
 export default () => {
   const centralState = React.useContext(AppContext);
@@ -29,6 +33,7 @@ export default () => {
     patientsOfNurse: [],
     reportsOfThisWriter: [],
     showUserSelector: false,
+    showNewReportModal : false
   });
 
   const setParam = (key, value) => {
@@ -110,7 +115,7 @@ export default () => {
           border: "solid 2px rgb(163, 172, 96)",
         }}
       >
-        <div>HASTAYA ATANAN HEMŞİRELER</div>
+        <div className="headerWithButton">HASTAYA ATANAN HEMŞİRELER   {addNewNurseButton} </div>
         {nurses.length === 0 ? (
           <div>Bu hastaya henüz hemşire atanmamaış.</div>
         ) : (
@@ -166,7 +171,7 @@ export default () => {
           </Table>
         )}
 
-        {addNewNurseButton}
+      
       </div>
     );
   };
@@ -175,6 +180,17 @@ export default () => {
     if (selectedUser.rol !== 2) return null;
 
     const reports = params.reportsOfPatient;
+
+    const addNewReportButton = ( <Button
+      variant="contained"
+      color="secondary"
+      startIcon={<AddIcon />}
+      onClick={() => {
+        setParam("showNewReportModal", true);
+      }}
+    >
+      Yeni Rapor Yaz
+    </Button>);
 
     return (
       <div
@@ -186,7 +202,7 @@ export default () => {
           border: "solid 2px rgb(146, 153, 191))",
         }}
       >
-        <div>HASTAYA YAZILMIŞ RAPORLAR</div>
+        <div  className="headerWithButton">HASTAYA YAZILMIŞ RAPORLAR {addNewReportButton}</div>
 
         {reports.length === 0 ? (
           <div>Bu hastaya henüz rapor yazılmamış.</div>
@@ -254,7 +270,7 @@ export default () => {
           border: "solid 2px rgb(163, 172, 96)",
         }}
       >
-     <div>HEMŞİREYE ATANAN HASTALAR</div> 
+     <div className="headerWithButton">HEMŞİREYE ATANAN HASTALAR {addNewPatientButton}</div> 
      {
        patients.length === 0?
        <div>Bu hemşireye henüz hasta atanmamış.</div>
@@ -308,7 +324,7 @@ export default () => {
         </Table>
      }
        
-        {addNewPatientButton}
+        
       </div>
     );
   };
@@ -330,7 +346,7 @@ export default () => {
           border: "solid 2px rgb(146, 153, 191))",
         }}
       >
-        <div style={{marginBottom:10}}> BU KİŞİNİN YAZDIĞI RAPORLAR</div>
+        <div className="headerWithButton"> BU KİŞİNİN YAZDIĞI RAPORLAR</div>
         {reports.length === 0 ? (
           <div>Bu kişi hiç rapor yazmamış.</div>
         ) : (
@@ -370,6 +386,11 @@ export default () => {
       </div>
     );
   };
+
+ 
+  const newReportScreen = params.showNewReportModal && (<NewReportModal open={true} onClose={()=>{
+    setParam("showNewReportModal", false);
+  }} />);
 
   const showUserChooser = () => {
     let roleForSearch; //
@@ -443,6 +464,7 @@ export default () => {
         {selectedUser.rol === 3 && patientsOfNurse()}
         {selectedUser.rol !== 2 && reportsOfThisWriter()}
         {params.showUserSelector && showUserChooser()}
+        {params.showNewReportModal && newReportScreen}
       </div>
     );
   } else return null;
