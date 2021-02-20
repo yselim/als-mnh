@@ -11,7 +11,7 @@ import {
   pullReportsOfWriter,
   detachNurseAndPatient,
   connectNurseAndPatient,
-  pullUsers
+  pullUsers,
 } from "../../../firestoreMethods";
 import { Button } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
@@ -21,11 +21,10 @@ import NewReportModal from "../NewReportModal/NewReportModal";
 
 import "./style.css";
 
-
 export default () => {
   const centralState = React.useContext(AppContext);
 
-  const { selectedUser } = centralState;
+  const { selectedUser, loggedOnUser } = centralState;
 
   const [params, setParams] = useState({
     nursesOfPatient: [],
@@ -33,7 +32,7 @@ export default () => {
     patientsOfNurse: [],
     reportsOfThisWriter: [],
     showUserSelector: false,
-    showNewReportModal : false
+    showNewReportModal: false,
   });
 
   const setParam = (key, value) => {
@@ -53,7 +52,7 @@ export default () => {
 
     if (selectedUser.rol === 2) {
       // hasta
-      const nurses = await pullUsers({ rol:3, patientUid:selectedUser.uid});
+      const nurses = await pullUsers({ rol: 3, patientUid: selectedUser.uid });
       const reports = await pullReportsOfPatient(selectedUser.uid);
       setParams({
         ...params,
@@ -63,7 +62,7 @@ export default () => {
       });
     } else if (selectedUser.rol === 3) {
       // hemşire:
-      const patients = await pullUsers({rol:2, nurseUid: selectedUser.uid});
+      const patients = await pullUsers({ rol: 2, nurseUid: selectedUser.uid });
 
       const reports = await pullReportsOfWriter(selectedUser.uid);
       setParams({
@@ -90,7 +89,7 @@ export default () => {
   const nursesOfPatient = () => {
     if (selectedUser.rol !== 2) return null;
 
-    const addNewNurseButton = (
+    const addNewNurseButton = loggedOnUser.rol === 1 && (
       <Button
         variant="contained"
         color="secondary"
@@ -115,7 +114,9 @@ export default () => {
           border: "solid 2px rgb(163, 172, 96)",
         }}
       >
-        <div className="headerWithButton">HASTAYA ATANAN HEMŞİRELER   {addNewNurseButton} </div>
+        <div className="headerWithButton">
+          HASTAYA ATANAN HEMŞİRELER {addNewNurseButton}{" "}
+        </div>
         {nurses.length === 0 ? (
           <div>Bu hastaya henüz hemşire atanmamaış.</div>
         ) : (
@@ -141,37 +142,37 @@ export default () => {
             </TableHead>
             <TableBody>
               {nurses.map((row, i) => (
-                <TableRow key={"nuse_list_key"+i+row.tc}>
+                <TableRow key={"nuse_list_key" + i + row.tc}>
                   <TableCell align="center">{row.tc} </TableCell>
                   <TableCell align="center">{row.adi} </TableCell>
                   <TableCell align="center">{row.soyadi} </TableCell>
                   <TableCell align="center" style={{ fontWeight: "bold" }}>
-                    <Button
-                      variant="contained"
-                      onClick={async () => {
-                        if (
-                          window.confirm(
-                            "Hasta-Hemşire atamasını iptal etmek istiyor musunuz?"
-                          )
-                        ) {
-                          await detachNurseAndPatient(
-                            row.uid,
-                            selectedUser.uid
-                          );
-                          pullProperDataForSelectedUser();
-                        }
-                      }}
-                    >
-                      ATAMAYI İPTAL ET
-                    </Button>
+                    {loggedOnUser.rol === 1 && (
+                      <Button
+                        variant="contained"
+                        onClick={async () => {
+                          if (
+                            window.confirm(
+                              "Hasta-Hemşire atamasını iptal etmek istiyor musunuz?"
+                            )
+                          ) {
+                            await detachNurseAndPatient(
+                              row.uid,
+                              selectedUser.uid
+                            );
+                            pullProperDataForSelectedUser();
+                          }
+                        }}
+                      >
+                        ATAMAYI İPTAL ET
+                      </Button>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         )}
-
-      
       </div>
     );
   };
@@ -181,16 +182,20 @@ export default () => {
 
     const reports = params.reportsOfPatient;
 
-    const addNewReportButton = ( <Button
-      variant="contained"
-      color="secondary"
-      startIcon={<AddIcon />}
-      onClick={() => {
-        setParam("showNewReportModal", true);
-      }}
-    >
-      Yeni Rapor Yaz
-    </Button>);
+    const addNewReportButton = (
+      <Link to={"/reportWriting"}>
+        <Button
+          variant="contained"
+          color="secondary"
+          startIcon={<AddIcon />}
+          // onClick={() => {
+          //   setParam("showNewReportModal", true);
+          // }}
+        >
+          Yeni Rapor Yaz
+        </Button>
+      </Link>
+    );
 
     return (
       <div
@@ -202,7 +207,9 @@ export default () => {
           border: "solid 2px rgb(146, 153, 191))",
         }}
       >
-        <div  className="headerWithButton">HASTAYA YAZILMIŞ RAPORLAR {addNewReportButton}</div>
+        <div className="headerWithButton">
+          HASTAYA YAZILMIŞ RAPORLAR {addNewReportButton}
+        </div>
 
         {reports.length === 0 ? (
           <div>Bu hastaya henüz rapor yazılmamış.</div>
@@ -261,7 +268,7 @@ export default () => {
     const patients = params.patientsOfNurse;
 
     return (
-     <div
+      <div
         style={{
           marginBottom: 20,
           borderRadius: 15,
@@ -270,61 +277,63 @@ export default () => {
           border: "solid 2px rgb(163, 172, 96)",
         }}
       >
-     <div className="headerWithButton">HEMŞİREYE ATANAN HASTALAR {addNewPatientButton}</div> 
-     {
-       patients.length === 0?
-       <div>Bu hemşireye henüz hasta atanmamış.</div>
-       :
-        <Table //className={classes.table}
-          aria-label="simple table"
-        >
-          <TableHead>
-            <TableRow>
-              <TableCell align="center" style={{ fontWeight: "bold" }}>
-                TC
-              </TableCell>
-              <TableCell align="center" style={{ fontWeight: "bold" }}>
-                ADI
-              </TableCell>
-              <TableCell align="center" style={{ fontWeight: "bold" }}>
-                SOYADI
-              </TableCell>
-              <TableCell
-                align="center"
-                style={{ fontWeight: "bold" }}
-              ></TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {patients.map((row, i) => (
+        <div className="headerWithButton">
+          HEMŞİREYE ATANAN HASTALAR {addNewPatientButton}
+        </div>
+        {patients.length === 0 ? (
+          <div>Bu hemşireye henüz hasta atanmamış.</div>
+        ) : (
+          <Table //className={classes.table}
+            aria-label="simple table"
+          >
+            <TableHead>
               <TableRow>
-                <TableCell align="center">{row.tc} </TableCell>
-                <TableCell align="center">{row.adi} </TableCell>
-                <TableCell align="center">{row.soyadi} </TableCell>
                 <TableCell align="center" style={{ fontWeight: "bold" }}>
-                  <Button
-                    variant="contained"
-                    onClick={async () => {
-                      if (
-                        window.confirm(
-                          "Hasta-Hemşire atamasını iptal etmek istiyor musunuz?"
-                        )
-                      ) {
-                        await detachNurseAndPatient(selectedUser.uid, row.uid);
-                        pullProperDataForSelectedUser();
-                      }
-                    }}
-                  >
-                    ATAMAYI İPTAL ET
-                  </Button>
+                  TC
                 </TableCell>
+                <TableCell align="center" style={{ fontWeight: "bold" }}>
+                  ADI
+                </TableCell>
+                <TableCell align="center" style={{ fontWeight: "bold" }}>
+                  SOYADI
+                </TableCell>
+                <TableCell
+                  align="center"
+                  style={{ fontWeight: "bold" }}
+                ></TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-     }
-       
-        
+            </TableHead>
+            <TableBody>
+              {patients.map((row, i) => (
+                <TableRow>
+                  <TableCell align="center">{row.tc} </TableCell>
+                  <TableCell align="center">{row.adi} </TableCell>
+                  <TableCell align="center">{row.soyadi} </TableCell>
+                  <TableCell align="center" style={{ fontWeight: "bold" }}>
+                    <Button
+                      variant="contained"
+                      onClick={async () => {
+                        if (
+                          window.confirm(
+                            "Hasta-Hemşire atamasını iptal etmek istiyor musunuz?"
+                          )
+                        ) {
+                          await detachNurseAndPatient(
+                            selectedUser.uid,
+                            row.uid
+                          );
+                          pullProperDataForSelectedUser();
+                        }
+                      }}
+                    >
+                      ATAMAYI İPTAL ET
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
       </div>
     );
   };
@@ -387,10 +396,14 @@ export default () => {
     );
   };
 
- 
-  const newReportScreen = params.showNewReportModal && (<NewReportModal open={true} onClose={()=>{
-    setParam("showNewReportModal", false);
-  }} />);
+  const newReportScreen = params.showNewReportModal && (
+    <NewReportModal
+      open={true}
+      onClose={() => {
+        setParam("showNewReportModal", false);
+      }}
+    />
+  );
 
   const showUserChooser = () => {
     let roleForSearch; //
@@ -415,32 +428,31 @@ export default () => {
             patientId = selectedUser.uid;
             nurseId = pairId;
 
-            connectNurseAndPatient(nurseId, patientId).then(async(_) => {
-                const hemsireler = await pullUsers({rol:3, patientUid:patientId });
-                setParams({
-                  ...params,
-                  nursesOfPatient: hemsireler,
-                  showUserSelector: false
-                });
-            
+            connectNurseAndPatient(nurseId, patientId).then(async (_) => {
+              const hemsireler = await pullUsers({
+                rol: 3,
+                patientUid: patientId,
+              });
+              setParams({
+                ...params,
+                nursesOfPatient: hemsireler,
+                showUserSelector: false,
+              });
             });
-
           } else if (selectedUser.rol === 3) {
             nurseId = selectedUser.uid;
             patientId = pairId;
 
-            connectNurseAndPatient(nurseId, patientId).then(async(_) => {
-              const hastalar = await pullUsers({rol:2, nurseUid:nurseId });
+            connectNurseAndPatient(nurseId, patientId).then(async (_) => {
+              const hastalar = await pullUsers({ rol: 2, nurseUid: nurseId });
               setParam("patientsOfNurse", hastalar);
               setParams({
                 ...params,
                 patientsOfNurse: hastalar,
-                showUserSelector: false
+                showUserSelector: false,
               });
-          
-          });
+            });
           }
-         
         }}
       />
     );

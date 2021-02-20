@@ -6,6 +6,7 @@ import ReportPage from "../Components/pages/ReportPage";
 import { ROLLER } from "../constants";
 import AppContext from "../AppContext";
 import NursePage from "../Components/pages/NursePage";
+import ReportWritingPage from "../Components/pages/ReportWritingPage";
 
 // Oturum açan kullanıcı var mı, varsa talep edilen sayfa için yetkisi var mı vs kontrol eder ve uygun bir rota oluşturur.
 
@@ -35,6 +36,11 @@ const urls = {
     component: ReportPage,
     permittedRoles: [ROLLER.admin.id, ROLLER.hemsire.id, ROLLER.hoca.id],
   },
+  reportWriting:{
+    path: "/reportWriting",
+    component: ReportWritingPage,
+    permittedRoles: [ROLLER.admin.id, ROLLER.hemsire.id, ROLLER.hoca.id],
+  }
 };
 
 class RouteGenerator extends Component {
