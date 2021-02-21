@@ -17,7 +17,6 @@ import { Button } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import UserSearcherModal from "../UserSearcherModal";
 import { Link } from "react-router-dom";
-import NewReportModal from "../NewReportModal/NewReportModal";
 
 import "./style.css";
 
@@ -32,7 +31,6 @@ export default () => {
     patientsOfNurse: [],
     reportsOfThisWriter: [],
     showUserSelector: false,
-    showNewReportModal: false,
   });
 
   const setParam = (key, value) => {
@@ -183,14 +181,11 @@ export default () => {
     const reports = params.reportsOfPatient;
 
     const addNewReportButton = (
-      <Link to={"/reportWriting"}>
+      <Link to={"/reportWriting"} target="_blank">
         <Button
           variant="contained"
           color="secondary"
           startIcon={<AddIcon />}
-          // onClick={() => {
-          //   setParam("showNewReportModal", true);
-          // }}
         >
           Yeni Rapor Yaz
         </Button>
@@ -396,14 +391,7 @@ export default () => {
     );
   };
 
-  const newReportScreen = params.showNewReportModal && (
-    <NewReportModal
-      open={true}
-      onClose={() => {
-        setParam("showNewReportModal", false);
-      }}
-    />
-  );
+
 
   const showUserChooser = () => {
     let roleForSearch; //
@@ -476,7 +464,6 @@ export default () => {
         {selectedUser.rol === 3 && patientsOfNurse()}
         {selectedUser.rol !== 2 && reportsOfThisWriter()}
         {params.showUserSelector && showUserChooser()}
-        {params.showNewReportModal && newReportScreen}
       </div>
     );
   } else return null;

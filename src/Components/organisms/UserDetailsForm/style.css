@@ -1,0 +1,16 @@
+.container{
+
+}
+
+.kume{
+border: solid #D32F2F;
+background-color: #FFEBEE;
+margin:15px;
+border-radius: 15px;
+padding: 10px;
+}
+
+.kumeBasligi{
+    font-weight: bold;
+}
+

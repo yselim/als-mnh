@@ -13,7 +13,7 @@ class ReportTemplate extends Component {
         style={{
           display: "flex",
           flexDirection: "column",
-          height: "98vh",
+          minHeight: "98vh",
           border: "solid",
         }}
       >

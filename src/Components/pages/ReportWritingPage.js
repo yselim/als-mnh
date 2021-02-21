@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import NewReportModal from "../organisms/NewReportModal/NewReportModal";
+import ReportForm from "../organisms/ReportForm/ReportForm";
 import ReportTemplate from "../templates/ReportTemplate";
 
 class ReportWritingPage extends Component {
@@ -10,7 +10,7 @@ class ReportWritingPage extends Component {
       
     return  <ReportTemplate
     // reportUid={this.props.match.params.uid}
-     content={<NewReportModal />}
+     content={<ReportForm />}
    />
   }
 }

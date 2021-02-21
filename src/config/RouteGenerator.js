@@ -7,6 +7,7 @@ import { ROLLER } from "../constants";
 import AppContext from "../AppContext";
 import NursePage from "../Components/pages/NursePage";
 import ReportWritingPage from "../Components/pages/ReportWritingPage";
+import UserDetailsPage from "../Components/pages/UserDetailsPage";
 
 // Oturum açan kullanıcı var mı, varsa talep edilen sayfa için yetkisi var mı vs kontrol eder ve uygun bir rota oluşturur.
 
@@ -39,6 +40,11 @@ const urls = {
   reportWriting:{
     path: "/reportWriting",
     component: ReportWritingPage,
+    permittedRoles: [ROLLER.admin.id, ROLLER.hemsire.id, ROLLER.hoca.id],
+  },
+  userDetails:{
+    path: "/userDetails/:uid",
+    component: UserDetailsPage,
     permittedRoles: [ROLLER.admin.id, ROLLER.hemsire.id, ROLLER.hoca.id],
   }
 };

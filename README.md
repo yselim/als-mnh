@@ -52,7 +52,9 @@ RAPORLAR
 
 # ---- TO DO
 
--   Yeni rapor yazma ekranına form ekle --- React-Hook-Form ile çok güzel yapabilirsin.
+-   Hastanın değişmeyen bilgilerinin girileceği/editleneceği ekran yap: ilk yakınma tarihi, sosyo-ekonomik durumu vs. bilgiler.
+-   Cihaz envanteri sabit bilgilere eklensin. 
+-   Yeni rapor yazma ekranına form ekle
 -   hemşire-hoca ekranları 
 -   detaylı rapor inputları
 -   excele aktarmalar
