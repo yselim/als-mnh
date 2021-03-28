@@ -62,3 +62,8 @@ RAPORLAR
 -   tasarım - responsive mi
 -   Yeni kullanıcı eklerken mail-şifre de yazmalıyız ki o kişi login olabilsin.
 -   Sorulacak: hemşire sadece kendi yazdığı raporları mı görsün yoksa kendi hastalarına yazılan tüm raporları - başkası yazmış olsa bile - görsün mü?
+-   pagination
+
+# ---- SORUNLAR---
+-   rapor yazarken iletişim yöntemi diğer seçilince bunu rapor ekranına getirmiyor.
+-   raporlar sekmesini seçince güncel raporları çekmiyor

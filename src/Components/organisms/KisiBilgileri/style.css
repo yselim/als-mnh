@@ -5,3 +5,14 @@
     margin-bottom: 10px;
     font-weight: bold;
 }
+
+.newReportModal{
+    overflow: scroll;
+}
+
+.reportModalDiv{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    overflow: scroll;
+}

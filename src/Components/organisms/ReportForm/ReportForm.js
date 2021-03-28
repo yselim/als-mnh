@@ -9,12 +9,20 @@ import {
   TableRow,
 } from "@material-ui/core";
 import React, { useState } from "react";
-import { findUser, connectNurseAndPatient } from "../../../firestoreMethods";
+import {
+  findUser,
+  connectNurseAndPatient,
+  addReport,
+} from "../../../firestoreMethods";
 import { useForm } from "react-hook-form";
 
 import "./style.css";
+import { formFields, formInputTypes } from "../../../constants";
 
-export default ({ open, onClose }) => {
+export default ({ open, onClose, hasta_adi_soyadi,
+  hasta_uid,
+  yazar_adi_soyadi,
+  yazar_uid }) => {
   const [params, setParams] = useState({});
 
   const setParam = (key, value) => {
@@ -25,8 +33,23 @@ export default ({ open, onClose }) => {
   };
 
   const { register, handleSubmit, watch, errors } = useForm();
-  const onSubmit = (data) => alert("Data kaydedilecek...");
 
+  const onSubmit = (data) => {
+    console.log("form data:", data);
+ 
+    const reportData = {
+      ...data,
+      hasta_adi_soyadi,
+      hasta_uid,
+      yazar_adi_soyadi,
+      yazar_uid
+    };
+
+    if (data["Diğer iletisimYontemi"])
+      reportData["Diğer İletişim Yöntemi"] = params["iletisimYontemi"];
+
+    addReport(reportData).then(onClose);
+  };
   // console.log(watch("example")); // watch input value by passing the name of it
 
   const generateRadioGroup = (list, name) => {
@@ -72,18 +95,17 @@ export default ({ open, onClose }) => {
             <input
               type="checkbox"
               name={text}
-              value={text}
               ref={register}
               style={{ marginRight: 10 }}
             />
             <div>{text}</div>
           </div>
         ))}
+
         <div className="radioAndLabelDiv">
           <input
             type="checkbox"
-            name={name}
-            value={params[name]}
+            name={"Diğer " + name}
             ref={register}
             style={{ marginRight: 10 }}
           />
@@ -119,12 +141,7 @@ export default ({ open, onClose }) => {
               <TableCell>{r}</TableCell>
               {columnNames.map((c) => (
                 <TableCell align="center">
-                  <input
-                    type="radio"
-                    name={r}
-                    //value={text}
-                    ref={register}
-                  />
+                  <input type="radio" name={r} value={c} ref={register} />
                 </TableCell>
               ))}
             </TableRow>
@@ -134,130 +151,28 @@ export default ({ open, onClose }) => {
     );
   };
 
-  const kg = (
-    <TableRow>
-      <TableCell align="left">{"Kilo (kg)"} </TableCell>
-      <TableCell align="left">
-        <input name="kg" ref={register({ required: true })} />
-      </TableCell>
-      <TableCell align="left">
-        {errors.kg && <span>Lütfen bir değer giriniz</span>}
-      </TableCell>
-    </TableRow>
-  );
+  const generateFormInput = (name, input) => {
+    let item = null;
 
-  const beslenme = (
-    <TableRow>
-      <TableCell align="left">{"Beslenme"} </TableCell>
-      <TableCell align="left">
-        {generateRadioGroup(["Ağızdan", "Nazogastrik tüp", "PEG"], "beslenme")}
-      </TableCell>
-      <TableCell align="left">
-        {errors.beslenme && <span>Lütfen bir değer seçiniz</span>}
-      </TableCell>
-    </TableRow>
-  );
+    if (input.type === formInputTypes.numberInput)
+      item = <input name={name} ref={register} />;
+    else if (input.type === formInputTypes.radioList)
+      item = generateRadioGroup(input.choices, name);
+    else if (input.type === formInputTypes.checkList)
+      item = generateCheckGroup(input.choices, name);
+    else if (input.type === formInputTypes.radioTable)
+      item = generateRadioTable(input.rows, input.columns, name);
 
-  const solunum = (
-    <TableRow>
-      <TableCell align="left">{"Solunum"} </TableCell>
-      <TableCell align="left">
-        {generateRadioGroup(
-          ["Cihaz kullanmıyor", "Maske ile Bipap", "Trakeostomi"],
-          "solunum"
-        )}
-      </TableCell>
-      <TableCell align="left">
-        {errors.solunum && <span>Lütfen bir değer seçiniz</span>}
-      </TableCell>
-    </TableRow>
-  );
-
-  const konusma = (
-    <TableRow>
-      <TableCell align="left">{"Konuşma"} </TableCell>
-      <TableCell align="left">
-        {generateRadioGroup(
-          [
-            "Normal",
-            "Tekararlama ile anlaşılabilir",
-            "Anlaşılamıyor",
-            "Konuşma yok",
-          ],
-          "konusma"
-        )}
-      </TableCell>
-      <TableCell align="left">
-        {errors.konusma && <span>Lütfen bir değer seçiniz</span>}
-      </TableCell>
-    </TableRow>
-  );
-
-  const iletisimYontemi = (
-    <TableRow>
-      <TableCell align="left">{"İletişim Yöntemi"} </TableCell>
-      <TableCell align="left">
-        {generateCheckGroup(
-          [
-            "İletişim sorunu yok",
-            "El yazısı var",
-            "Alfabe tablosu",
-            "Dudak okuma",
-            "Göz kırpma",
-            "Lazer işaretleyici",
-            "Akıllı telefon",
-            "Tablet",
-            "Bilgisayar / sanal klavye",
-            "Eyetouch gözlük",
-            "Smartnav",
-            "Glassouse",
-            "Smarttekas göz bilgisayarı",
-            "Tobii Dynavox göz bilgisayarı",
-            "Tabii 4c / Optikey / Windows",
-          ],
-          "iletisim_yontemi"
-        )}
-      </TableCell>
-      <TableCell align="left">
-        {errors.iletisim_yontemi && <span>Lütfen bir değer seçiniz</span>}
-      </TableCell>
-    </TableRow>
-  );
-
-  
-  const alsaq5 = (
-    <TableRow>
-      <TableCell align="left">{"Son 2 haftada karşılaşılan güçlüklerin ne sıklıkta olduğunu işaretleyiniz. (ALSAQ-5)"} </TableCell>
-      <TableCell align="left">
-        {generateRadioTable(
-          ["Ayakta durmakta güçlük yaşarım",
-          "Kollarımı ve  ellerimi kullanmada güçlük yaşarım",
-          "Katı gıdaları yemekte güçlük yaşarım",
-          "Konuşmamın kolay anlaşılmadığını hissederim",
-          "Gelecek hakkında umutsuzum",
-        
-        ],
-          ["Hiçbir zaman", "Nadiren", "Bazen", "Her Zaman"],
-          "alsaq"
-        )}
-      </TableCell>
-      <TableCell align="left">
-        {errors.iletisim_yontemi && <span>Lütfen bir değer seçiniz</span>}
-      </TableCell>
-    </TableRow>
-  );
-
-  const alsaqScore = (
-    <TableRow>
-      <TableCell align="left">{"ALSAQ-5 skoru"} </TableCell>
-      <TableCell align="left">
-        <input name="alsaqScore" ref={register({ required: true })} />
-      </TableCell>
-      <TableCell align="left">
-        {errors.alsaqScore && <span>Lütfen bir değer giriniz</span>}
-      </TableCell>
-    </TableRow>
-  );
+    return (
+      <TableRow>
+        <TableCell align="left">{input.text} </TableCell>
+        <TableCell align="left">{item}</TableCell>
+        <TableCell align="left">
+          {/* {errors.alsaqScore && <span>Lütfen bir değer giriniz</span>} */}
+        </TableCell>
+      </TableRow>
+    );
+  };
 
   return (
     <div className="modalBox">
@@ -269,14 +184,10 @@ export default ({ open, onClose }) => {
           aria-label="simple table"
         >
           <TableBody>
-            {kg}
-            {beslenme}
-            {solunum}
-            {konusma}
-            {iletisimYontemi}
-            {/* {cihazEnvanteri} */}
-            {alsaq5}
-            {alsaqScore}
+            {Object.keys(formFields).map((name) => {
+              const input = formFields[name];
+              return generateFormInput(name, input);
+            })}
           </TableBody>
         </Table>
 

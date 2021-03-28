@@ -13,12 +13,13 @@ import {
   connectNurseAndPatient,
   pullUsers,
 } from "../../../firestoreMethods";
-import { Button } from "@material-ui/core";
+import { Button, Modal } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import UserSearcherModal from "../UserSearcherModal";
 import { Link } from "react-router-dom";
 
 import "./style.css";
+import ReportForm from "../ReportForm/ReportForm";
 
 export default () => {
   const centralState = React.useContext(AppContext);
@@ -31,6 +32,8 @@ export default () => {
     patientsOfNurse: [],
     reportsOfThisWriter: [],
     showUserSelector: false,
+    showNewReportModal: false,
+
   });
 
   const setParam = (key, value) => {
@@ -41,6 +44,7 @@ export default () => {
   };
 
   const uid = selectedUser && selectedUser.uid;
+
   useEffect(() => {
     pullProperDataForSelectedUser();
   }, [uid]);
@@ -181,15 +185,14 @@ export default () => {
     const reports = params.reportsOfPatient;
 
     const addNewReportButton = (
-      <Link to={"/reportWriting"} target="_blank">
         <Button
           variant="contained"
           color="secondary"
           startIcon={<AddIcon />}
+          onClick={_=>setParam("showNewReportModal", true)}
         >
           Yeni Rapor Yaz
         </Button>
-      </Link>
     );
 
     return (
@@ -446,6 +449,32 @@ export default () => {
     );
   };
 
+  const newReportModal = params.showNewReportModal && (<Modal
+    open={params.showNewReportModal}
+    onClose={_=>setParam("showNewReportModal", false)}
+    aria-labelledby="simple-modal-title"
+    aria-describedby="simple-modal-description"
+    className="newReportModal"
+  >
+  <div className="reportModalDiv">
+      <ReportForm 
+      hasta_adi_soyadi={selectedUser.adi + " " + selectedUser.soyadi}
+      hasta_uid={selectedUser.uid}
+      yazar_adi_soyadi={loggedOnUser.adi + " " + loggedOnUser.soyadi}
+      yazar_uid={loggedOnUser.uid}
+      onClose={_=>{
+        setParam("showNewReportModal", false);
+        pullProperDataForSelectedUser();
+      }}
+      />
+  </div>
+      
+   
+
+   
+  </Modal>);
+
+
   if (selectedUser.rol > -1) {
     return (
       <div
@@ -464,6 +493,7 @@ export default () => {
         {selectedUser.rol === 3 && patientsOfNurse()}
         {selectedUser.rol !== 2 && reportsOfThisWriter()}
         {params.showUserSelector && showUserChooser()}
+        {params.showNewReportModal && newReportModal}
       </div>
     );
   } else return null;

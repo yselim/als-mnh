@@ -1,4 +1,4 @@
-import { db, firebaseAuth } from "./config/firebaseConfig";
+import { db, firebaseAuth, timeStamp } from "./config/firebaseConfig";
 import "firebase/firestore";
 
 
@@ -9,7 +9,11 @@ const pullReportsOfPatient = async (patientUid) => {
     .get()
     .then((querySnapshot) => {
       return querySnapshot.docs.map((doc) => {
-        return { ...doc.data(), uid: doc.id };
+
+        let report={...doc.data(), uid: doc.id };
+        report.tarih= report.tarih.toDate().toLocaleDateString('tr-TR');
+
+        return report;
       });
     });
 };
@@ -63,7 +67,11 @@ const pullReportsOfWriter = async (writerUid) => {
     .get()
     .then((querySnapshot) => {
       return querySnapshot.docs.map((doc) => {
-        return { ...doc.data(), uid: doc.id };
+
+        let report={...doc.data(), uid: doc.id };
+        report.tarih= report.tarih.toDate().toLocaleDateString('tr-TR');
+
+        return report;
       });
     });
 };
@@ -74,7 +82,10 @@ const pullAllReports = async () => {
     .get()
     .then((querySnapshot) => {
       return querySnapshot.docs.map((doc) => {
-        return { ...doc.data(), uid: doc.id };
+        let report={...doc.data(), uid: doc.id };
+        report.tarih= report.tarih.toDate().toLocaleDateString('tr-TR');
+
+        return report;
       });
     });
 };
@@ -131,8 +142,11 @@ const findReportByUid = async (uid) => {
     .collection("raporlar")
     .doc(uid)
     .get()
-    .then((d) => {
-      return { ...d.data(), uid: d.id };
+    .then((doc) => {
+      let report={...doc.data(), uid: doc.id };
+      report.tarih= report.tarih.toDate().toLocaleDateString('tr-TR');
+
+      return report;
     });
 };
 
@@ -228,7 +242,11 @@ const logout = (afterMethod) => {
   );
 };
 
+const addReport = (reportData) =>{
+  reportData.tarih= timeStamp;
 
+  return  db.collection("raporlar").add(reportData);
+}
 
 export {
   listenUsers,
@@ -244,5 +262,6 @@ export {
   authUser,
   listenAuthenticatedUserChanges,
   logout,
-  pullUsers
+  pullUsers,
+  addReport
 };
