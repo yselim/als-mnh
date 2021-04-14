@@ -12,41 +12,46 @@ import {
   import { useForm } from "react-hook-form";
   
   import "./style.css";
+import { formInputTypes } from "../../../constants";
   
   const hastaBilgileri = {kumeAdi:"KİŞİSEL BİLGİLER", liste:[
     {
       name:"Adı",
-      inputType:"text"
+      inputType:formInputTypes.textInput
     },
     {
       name:"Soyadı",
-      inputType:"text"
+      inputType:formInputTypes.textInput
     },{
       name:"TC",
-      inputType:"number"
+      inputType:formInputTypes.numberInput
     },{
       name:"Doğum Tarihi",
-      inputType:"date"
-    },{
-      name:"Üye Mi",
-      inputType:"radio",
-      choices:["Evet", "Hayır"]
-    },{
+      inputType:formInputTypes.dateInput
+    },
+    // {
+    //   name:"Üye Mi",
+    //   inputType:formInputTypes.radioList,
+    //   choices:["Evet", "Hayır"]
+    // },
+    
+    {
       name:"Üye No",
-      inputType:"number"
+      inputType:formInputTypes.numberInput
     },{
       name:"Teşhis",
-      inputType:"text"
+      inputType:formInputTypes.textInput
     },{
       name:"Teşhis Tarihi",
-      inputType:"date"
+      inputType:formInputTypes.dateInput
     },{
       name:"Cinsiyet",
-      inputType:"radio",
-      choices:["Erkek", "Kadın"]
+      inputType:formInputTypes.radioList,
+      choices:["Erkek", "Kadın"],
+      hideOtherOption:true
     },{
       name:"Eğitim",
-      inputType:"text"
+      inputType:formInputTypes.textInput
     },
   ]};
 
@@ -54,91 +59,94 @@ import {
     
     {
       name:"Email",
-      inputType:"text"
+      inputType:formInputTypes.textInput
     },{
       name:"Hasta Telefon",
-      inputType:"text"
+      inputType:formInputTypes.textInput
     },{
       name:"Hasta Adresi",
-      inputType:"text"
+      inputType:formInputTypes.textInput
     },{
       name:"İl",
-      inputType:"text"
+      inputType:formInputTypes.textInput
     },{
       name:"İlçe",
-      inputType:"text"
+      inputType:formInputTypes.textInput
     },{
       name:"Doktoru",
-      inputType:"text"
+      inputType:formInputTypes.textInput
     },{
       name:"Hasta Yakını Adı-Soyadı",
-      inputType:"text"
+      inputType:formInputTypes.textInput
     },{
       name:"Hastas Yakını Email",
-      inputType:"text"
+      inputType:formInputTypes.textInput
     },{
       name:"Hasta Yakını Telefon",
-      inputType:"text"
+      inputType:formInputTypes.textInput
     }]};
 
-    const durumBilgileri ={kumeAdi:"DURUM BİLGİSİ", liste:[
+    const durumBilgileri ={kumeAdi:"PEG/TRAKESTOMİ DURUMU", liste:[
     
     {
-      name:"Bakıcı Durumu",
-      inputType:"text"
-    },{
       name:"Peg Tarihi",
-      inputType:"date"
+      inputType:formInputTypes.dateInput
     },
     {
       name: "Peg No",
-      inputType:"number"
+      inputType:formInputTypes.numberInput
     },
     {
       name:"Peg Markası",
-      inputType:"text"
+      inputType:formInputTypes.textInput
     },
     {
       name:"Trakestomi Tarihi",
-      inputType:"date"
+      inputType:formInputTypes.dateInput
     },
     {
       name: "Trakestomi No",
-      inputType:"number"
+      inputType:formInputTypes.numberInput
     },
     {
       name:"Trakestomi Markası",
-      inputType:"text"
+      inputType:formInputTypes.textInput
     },{
       name:"Mama Markası",
-      inputType:"text"
+      inputType:formInputTypes.textInput
     },
   ]};
 
   const sosyalDurum = {kumeAdi:"SOSYAL DURUM", liste:[
     {
+      name:"Bakıcı Durumu",
+      inputType:formInputTypes.textInput
+    },
+    {
       name:"Aylık Geliri",
-      inputType:"text"
+      inputType:formInputTypes.textInput
     },
     {
       name:"Ev Durumu",
-      inputType:"radio",
+      inputType:formInputTypes.radioList,
       choices:["Ev Sahibi", "Kiracı"]
     },{
       name:"Bakım Yardımı vs. (Açıklamaları ve miktarı)",
-      inputType:"text"
+      inputType:formInputTypes.textInput
     },{
       name:"Burs",
-      inputType:"text"
+      inputType:formInputTypes.textInput
     },{
       name:"Hanedeki Kişi Sayısı",
-      inputType:"number"
+      inputType:formInputTypes.numberInput
     },
     {
       name:"Çocuk Sayısı",
-      inputType:"number"
+      inputType:formInputTypes.numberInput
     },
   ]};
+
+  
 
 
   export default ({ uid }) => {
@@ -152,9 +160,73 @@ import {
     };
   
     const { register, handleSubmit, watch, errors } = useForm();
-    const onSubmit = (data) => alert("Data kaydedilecek...");
+    const onSubmit = (data) => {
+      console.log("data: ", data)  
+      alert("Data kaydedilecek...");
+    }
   
     // console.log(watch("example")); // watch input value by passing the name of it
+
+    
+
+    const generateFormInput = (i) => {
+      let item = null;
+  
+      if (i.inputType === formInputTypes.numberInput)
+        item = <input name={i.name} ref={register} type="number" />;
+      else if (i.inputType === formInputTypes.textInput)
+      item = <input name={i.name} ref={register} type="text" />;
+      else if (i.inputType === formInputTypes.dateInput)
+      item = <input name={i.name} ref={register} type="date"/>;
+      else if (i.inputType === formInputTypes.radioList)
+      item = generateRadioGroup(i.choices, i.name, i.hideOtherOption);
+  
+      return (
+        <TableRow key = {"user_detail_form_input" + i.name}>
+          <TableCell align="left">{i.name} </TableCell>
+          <TableCell align="left">{item}</TableCell>
+          <TableCell align="left">
+            {/* {errors.alsaqScore && <span>Lütfen bir değer giriniz</span>} */}
+          </TableCell>
+        </TableRow>
+      );
+    };
+
+    const generateRadioGroup = (list, name, hideOtherOption) => {
+      return (
+        <div>
+          {list.map((text) => (
+            <div className="radioAndLabelDiv">
+              <input
+                type="radio"
+                name={name}
+                value={text}
+                ref={register}
+                style={{ marginRight: 10 }}
+              />
+              <div>{text}</div>
+            </div>
+          ))}
+          { !hideOtherOption && <div className="radioAndLabelDiv">
+            <input
+              type="radio"
+              name={name}
+              value={params[name]}
+              ref={register}
+              style={{ marginRight: 10 }}
+            />
+            <TextField
+              placeholder="Diğer"
+              variant="standard"
+              value={params[name]}
+              onChange={(t) => setParam(name, t.target.value)}
+              size="small"
+            />
+          </div>}
+        </div>
+      );
+    };
+
   
     const generateRadioTable = (rowNames, columnNames, name) => {
       return (
@@ -198,13 +270,7 @@ import {
         <TableBody>
 
           {
-            kume.liste.map(i=>{
-              return <TableRow>
-              <TableCell>{i.name}</TableCell>
-              <TableCell>{i.inputType}</TableCell>
-    
-            </TableRow>
-            })
+            kume.liste.map(i=>generateFormInput(i))
           }
           
         </TableBody>

@@ -14,7 +14,11 @@ export const formInputTypes= {
     numberInput: "numberInput",
     radioList:"radioList",
     checkList: "checkList",
-    radioTable:"radioTable"
+    radioTable:"radioTable",
+    textInput: "textInput",
+    dateInput : "dateInput",
+    
+
 }
 
 export const formFields = {
