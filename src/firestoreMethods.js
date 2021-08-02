@@ -137,6 +137,16 @@ const findUserByUid = async (uid) => {
     });
 };
 
+const pullUserDetails = async(uid)=>{
+  return db
+    .collection("kisi_detaylari")
+    .doc(uid)
+    .get()
+    .then((d) => {
+      return { ...d.data(), uid: d.id };
+    });
+}
+
 const findReportByUid = async (uid) => {
   return db
     .collection("raporlar")
@@ -258,6 +268,7 @@ export {
   findUser,
   connectNurseAndPatient,
   findUserByUid,
+  pullUserDetails,
   findReportByUid,
   authUser,
   listenAuthenticatedUserChanges,

@@ -63,7 +63,12 @@ RAPORLAR
 -   Yeni kullanıcı eklerken mail-şifre de yazmalıyız ki o kişi login olabilsin.
 -   Sorulacak: hemşire sadece kendi yazdığı raporları mı görsün yoksa kendi hastalarına yazılan tüm raporları - başkası yazmış olsa bile - görsün mü?
 -   pagination
+-   scroll bar biraz büyük olsun, aşağı çekilemiyor.
 
 # ---- SORUNLAR---
 -   rapor yazarken iletişim yöntemi diğer seçilince bunu rapor ekranına getirmiyor.
 -   raporlar sekmesini seçince güncel raporları çekmiyor
+-   kullanıcı adı-şifre hatalıysa düzgün uyarı versin. Şimdi kırmızı hata ekranı geliyor.
+-   Beni hatırla butonu
+-   Token'ı locale stora'a yaz, her rapora-sayfaya girişye login ekranı gelmesin. 
+-   kişiyi seçince sol tarafta bilgileri gelene kadar loading dönsün.
